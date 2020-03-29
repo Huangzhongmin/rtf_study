@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rtf.iter.org/1.0" xsi:schemaLocation="http://rtf.iter.org/1.0 rtf.xsd" Name="app01">
+    <Description>A demo application that reads three values from input, adds them, and prints the output.</Description>
+
+
+    <FunctionBlock Name="reader1" Type="ConsoleReader<float64>">
+            <OutputPort Name="Out" Signal="a" />
+    </FunctionBlock>
+
+    <FunctionBlock Name="mdsc" Type="ReadSig<float64>">
+            <!--Parameter Name="Server" Value="127.0.0.1:8000"/-->
+        <InputPort Name="In" Signal="a" />
+            <OutputPort Name="Out" Signal="b" />
+    </FunctionBlock>
+
+    <FunctionBlock Name="writer3" Type="ConsoleWriter<float64>">
+        <InputPort Name="In" Signal="b" />
+    </FunctionBlock>
+</Application>

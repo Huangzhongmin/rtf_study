@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Environment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rtf.iter.org/1.0" xsi:schemaLocation="http://rtf.iter.org/1.0 rtf.xsd">
+    <Host Name="n1">
+        <Process Name="p1">
+            <Thread Name="t1" SchedulingPolicy="SCHED_FIFO" CpuAffinity="     0    1    " WaitPolicy="POLL" Priority="10"/>
+            <Thread Name="t2" SchedulingPolicy="SCHED_RR" CpuAffinity="1 2" WaitPolicy="POLL" Priority="10"/>
+        </Process>
+        <Process Name="p2">
+            <Thread Name="t1" SchedulingPolicy="SCHED_FIFO" CpuAffinity="     0    1    " WaitPolicy="POLL" Priority="10"/>
+            <Thread Name="t2" SchedulingPolicy="SCHED_RR" CpuAffinity="1 2" WaitPolicy="POLL" Priority="10"/>
+        </Process>
+    </Host>
+    <Plugins LoadAll="false">
+        <Enable Name="math"/>
+        <Enable Name="console"/>
+        <Enable Name="console_logger"/>
+        <Enable Name="epics_transport_layer" />
+    </Plugins>
+    <Plugins LoadAll="True" Path="../mdsplus/target/main/c++/lib"/>
+</Environment>
