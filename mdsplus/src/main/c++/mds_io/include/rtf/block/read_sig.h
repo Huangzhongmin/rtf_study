@@ -70,33 +70,33 @@ class ReadSig : public FunctionBlock {
   bool process() override;
 
  private:
-  Parameter<float64_t> gain_; //!< Parameter example
-  InputPort<T> in_;           //!< Input port example
-  OutputPort<T> out_;         //!< Output port example
   Parameter<std::string> server_;
   Parameter<std::string> sig_name_;
   Parameter<std::string> tree_;
   Parameter<int32_t> shot_;
 
+  int shot;
+  char server[128];
+  char tree[128];
+  char signaly[128];
+  char signalx[128];
+
   int socket;
   int status;
   int size;
-  int shot;
-
   T* data;
   T* timebase;
-  int sigDescr;
-  int timeDescr;
+  int sigDesc;
+  int timeDesc;
+  int dtype_float=DTYPE_FLOAT;
+  int null=0;
+  int retLen;
 
 };
 
 template <typename T>
 ReadSig<T>::ReadSig(const BlockConfigurator& configurator) : FunctionBlock(configurator) {
-  // Function block initialization example
-  initParameter("Gain", gain_, configurator, 2.0);
-  initInputPort("In", in_, configurator);
-  initOutputPort("Out", out_, configurator);
-
+// initialize parameters
   const std::string dserver ("202.127.204.12");
   initParameter("Server",server_,configurator,dserver);
 
@@ -107,29 +107,40 @@ ReadSig<T>::ReadSig(const BlockConfigurator& configurator) : FunctionBlock(confi
   initParameter("SigName",sig_name_,configurator,dsigname);
 
   initParameter("Shot",shot_,configurator,81561);
+
+//convert constant variable
+  strcpy(server,(*server_).c_str());
+  strcpy(tree,(*tree_).c_str());
+  strcpy(signaly,(*sig_name_).c_str());
+  //strcpy(signalx,(*sig_name_).c_str());
+  sprintf(signalx,"DIM_OF(%s)",signaly);
   shot=*shot_;
+;
 
-  socket=MdsConnect(const_cast<char*>((*server_).c_str()));
+//connect to server and open tree
+  socket=MdsConnect(server);
     if(socket==-1)
-        std::cerr<<"Error Connecting: "<<*server_<<std::endl;
+        std::cerr<<"Error Connecting: "<<server<<std::endl;
     else
-        std::cout<<"Connected to :"<<*server_<<std::endl;
-  status=MdsOpen(const_cast<char*> ((*tree_).c_str()),&shot);
+        std::cout<<"Connected to :"<<server<<std::endl;
+  status=MdsOpen(tree,&shot);
   if(!statusOK(status))
-    std::cerr<<"Error Opening "<<shot<<"shot "<<"in tree:"<<*tree_<<std::endl;
+    std::cerr<<"Error Opening "<<shot<<"shot "<<"in tree:"<<tree<<std::endl;
   else
-    std::cout<<"Opened :"<<shot<<" in "<<*tree_<<std::endl;
+    std::cout<<"Opened :"<<shot<<" in "<<tree<<std::endl;
 
-  size=getSize(const_cast<char*>((*sig_name_).c_str()));
-//std::cout<<size<<std::endl;
+//retrieve buffer size
+  size=getSize(signaly);
 
-  data = (T *)malloc(size*sizeof(T));i
+//initialize buffer
+  data = (T *)malloc(size*sizeof(T));
   if(!data)
       std::cerr<<"Error allocating memory for data.";
+
   timebase = (T *)malloc(size*sizeof(T));
   if(!timebase){
       std::cerr<<"Error allocating memory for timebase.";
-      free()(void*)data);
+      free((void*)data);
   }
 
 }
@@ -137,8 +148,32 @@ ReadSig<T>::ReadSig(const BlockConfigurator& configurator) : FunctionBlock(confi
 template<typename T>
 bool ReadSig<T>::process() {
   // Function block processing function example
-  *out_ = *in_ * *gain_;
-  return true;
+  std::cout<<"Retrieve data from "<<*server_<<"..."<<std::endl;
+  std::cout<<"Tree: "<<*tree_<<std::endl;
+  std::cout<<"Shot: "<<*shot_<<std::endl;
+  std::cout<<"Signal: "<<*sig_name_<<std::endl;
+  std::cout<<"Total sample points: "<<size<<std::endl;
+
+  sigDesc=descr(&dtype_float,data,&size,&null);
+  timeDesc=descr(&dtype_float,timebase,&size,&null);
+
+  status=MdsValue(signaly,&sigDesc,&null,&retLen);
+    if(!statusOK(status)){
+        std::cerr<<"Error retrieving data:"<<MdsGetMsg(status)<<std::endl;
+        free((void*)data);
+        return -1;
+    }
+    status=MdsValue(signalx,&timeDesc,&null,&retLen);
+    if(!statusOK(status)){
+        std::cerr<<"Error retrieving timebase:"<<MdsGetMsg(status)<<std::endl;
+        free((void*)data);
+        free((void*)timebase);
+        return -1;
+    }
+
+    for(retLen=0;retLen!=1000;++retLen)
+        std::cout<<data[retLen]<<":"<<timebase[retLen]<<std::endl;
+    return true;
 }
 
 /**

@@ -16,5 +16,5 @@
         <Enable Name="console_logger"/>
         <Enable Name="epics_transport_layer" />
     </Plugins>
-    <Plugins LoadAll="True" Path="../mdsplus/target/main/c++/lib"/>
+    <Plugins LoadAll="True" Path="../target/main/c++/lib"/>
 </Environment>
