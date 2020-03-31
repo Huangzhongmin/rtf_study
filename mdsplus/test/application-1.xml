@@ -8,7 +8,7 @@
     </FunctionBlock>
 
     <FunctionBlock Name="mdsc" Type="ReadSig<float64>">
-            <!--Parameter Name="Server" Value="127.0.0.1:8000"/-->
+            <Parameter Name="Server" Value="127.0.0.1:8000"/>
         <InputPort Name="In" Signal="a" />
             <OutputPort Name="Out" Signal="b" />
     </FunctionBlock>
