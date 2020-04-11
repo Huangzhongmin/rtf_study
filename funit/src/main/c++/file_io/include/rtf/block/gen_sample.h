@@ -16,8 +16,8 @@
  * of the distribution package.
  */
 
-#ifndef RTF_BLOCK_SIMPLE_WRITE_H_
-#define RTF_BLOCK_SIMPLE_WRITE_H_
+#ifndef RTF_BLOCK_GEN_SAMPLE_H_
+#define RTF_BLOCK_GEN_SAMPLE_H_
 
 
 

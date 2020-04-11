@@ -7,11 +7,11 @@
         <OutputPort Name="Out" Signal="a" />
     </FunctionBlock>
 
-    <FunctionBlock Name="sim" Type="GenSample<float64>">
+    <FunctionBlock Name="sam" Type="GenSample<float64>">
         <InputPort Name="In" Signal="a" />
         <OutputPort Name="Out" Signal="b" />
     </FunctionBlock>
-    
+
 <FunctionBlock Name="writer" Type="ConsoleWriter<Sample<float64>>">
         <InputPort Name="In" Signal="b" />
     </FunctionBlock>
