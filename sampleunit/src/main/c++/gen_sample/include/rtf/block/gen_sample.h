@@ -52,6 +52,7 @@ class GenSample : public FunctionBlock {
   Parameter<int32_t> quality_; //samplequality
   InputPort<T> in_;           //!< Input port example
   OutputPort<Sample<T>> out_;         //!< Output port example
+  OutputPort<ArraySample<T,10>> aout_;         //!< Output port example
 };
 
 template <typename T>
@@ -60,14 +61,16 @@ GenSample<T>::GenSample(const BlockConfigurator& configurator) : FunctionBlock(c
   initParameter("Quality",quality_,configurator,0);
   initInputPort("In", in_, configurator);
   initOutputPort("Out", out_, configurator);
+//  initOutputPort("AOut", aout_, configurator);
 }
 
 template<typename T>
 bool GenSample<T>::process() {
 
   rtf::Sample<T> sample_point;
+  rtf::ArraySample<T,10> sample_arr;
 
-  switch(*quality_){
+  switch(quality_){
     case 0:sample_point.setQuality(rtf::SampleQuality::kGood);break;
     case 1:sample_point.setQuality(rtf::SampleQuality::kInvalid);break;
     case 2:sample_point.setQuality(rtf::SampleQuality::kDataIntegrationError);break;
@@ -75,7 +78,12 @@ bool GenSample<T>::process() {
   sample_point.setTimestamp(getTimePoint());
   sample_point.setValue(in_);
   out_=sample_point;
-
+  sample_point.toStream(std::cout);
+  std::cout<<"^^^^^"<<std::endl;
+  T data[10]={1,2,3,4,5,6,7,8,9,0};
+  sample_arr=data;
+  sample_arr.toStream(std::cout);
+  *aout_=sample_arr;
   return true;
 }
 

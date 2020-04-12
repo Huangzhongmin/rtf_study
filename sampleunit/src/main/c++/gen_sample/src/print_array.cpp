@@ -1,7 +1,7 @@
 /*
  * Project       : Real-Time Framework
  *
- * Description   : Gen_sample plugin implementation
+ * Description   : GenSample function block implementation
  *
  * Author        : codac-dev
  *
@@ -16,19 +16,15 @@
  * of the distribution package.
  */
 
-#include "rtf/block/gen_sample.h"
 #include "rtf/block/print_array.h"
-#include "rtf/factory_manager.h"
 
 namespace rtf {
 namespace block {
 
-extern "C"
-void registerFactories(FactoryManager* registrar) {
-  registerGenSampleFactory(registrar);
-  registerPrintArrayFactory(registrar);
+void registerPrintArraFactory(FactoryManager* registrar) {
+  registrar->registerFactory(Factory<FunctionBlock, PrintArray<float64_t,10>>("PrintArray<float64,10>"));
 }
 
-}  // namespace block
-}  // namespace rtf
+}   //  namespace block
+}   //  namespace rtf
 
