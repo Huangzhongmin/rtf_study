@@ -6,9 +6,15 @@ inline char* s2c(const std::string & s){
     return const_cast<char*>(s.c_str());
 }
 int main(){
+    MDSplus::Connection *conn;
 try{
-    MDSplus::Connection *conn= new MDSplus::Connection(s2c("202.127.204.12"));
+    MDSplus::Connection *con= new MDSplus::Connection(s2c("202.127.204.12"));
+    conn=con;
     conn->openTree(s2c("pcs_east"),81561);
+}
+  catch(MDSplus::MdsException *exc){
+        std::cerr<<"Error "<<exc->what()<<std::endl;
+    }
 
     //MDSplus::Data *data=conn->get("SIZE(\\pcrl01)");
     //int size = data->getInt();
@@ -32,11 +38,6 @@ try{
     delete databuf;
     delete timebuf;
 
-    }
-
-    catch(MDSplus::MdsException *exc){
-        std::cerr<<"Error "<<exc->what()<<std::endl;
-    }
 return 0;
 }
 
