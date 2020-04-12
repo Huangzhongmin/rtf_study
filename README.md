@@ -2,6 +2,7 @@
 
 ## ArraySample
 + 不可以使用init族函数， mvn install时报错：
+见err.note
 > init族需要T实现<< >> 运算符？
 + 运行时错误
 ```
