@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://rtf.iter.org/1.0" xsi:schemaLocation="http://rtf.iter.org/1.0 rtf.xsd" Name="app01">
+    <Description/>
+    <FunctionBlock Name="reader1" Type="ConsoleReader<float64>">
+        <OutputPort Name="Out" Signal="a" />
+    </FunctionBlock>
+    <FunctionBlock Name="reader2" Type="ConsoleReader<float64>">
+        <OutputPort Name="Out" Signal="b" />
+    </FunctionBlock>
+    <FunctionBlock Name="reader3" Type="ConsoleReader<float64>">
+        <OutputPort Name="Out" Signal="c" />
+    </FunctionBlock>
+    <FunctionBlock Name="reader4" Type="ConsoleReader<float64>">
+        <OutputPort Name="Out" Signal="d" />
+    </FunctionBlock>
+    <FunctionBlock Name="reader5" Type="ConsoleReader<float64>">
+        <OutputPort Name="Out" Signal="e" />
+    </FunctionBlock>
+
+    <FunctionBlock Name="sam" Type="Vector<float64>">
+            <InputPort Name="In" Signal="a"/>
+            <InputPort Name="In" Signal="b"/>
+            <InputPort Name="In" Signal="c"/>
+            <InputPort Name="In" Signal="d"/>
+            <InputPort Name="In" Signal="e"/>
+            <OutputPort Name="Out" Signal="z1"/>
+            <OutputPort Name="Out" Signal="z2"/>
+            <OutputPort Name="Out" Signal="z3"/>
+            <OutputPort Name="Out" Signal="z4"/>
+            <OutputPort Name="Out" Signal="z5"/>
+    </FunctionBlock>
+    <FunctionBlock Name="sim" Type="Pvector<float64>">
+            <InputPort Name="In" Signal="z1" />
+            <InputPort Name="In" Signal="z2" />
+            <InputPort Name="In" Signal="z3" />
+            <InputPort Name="In" Signal="z4" />
+            <InputPort Name="In" Signal="z5" />
+        <OutputPort Name="Out" Signal="qwe" />
+    </FunctionBlock>
+
+</Application>

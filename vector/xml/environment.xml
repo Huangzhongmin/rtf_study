@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Environment
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://rtf.iter.org/1.0" xsi:schemaLocation="http://rtf.iter.org/1.0 rtf.xsd">
+  <Host Name="n1">
+    <Process Name="p1">
+      <Thread Name = "t0" SchedulingPolicy="SCHED_RR" CpuAffinity="0" WaitPolicy="POLL" Priority="1" />
+      <Thread Name = "t1" SchedulingPolicy="SCHED_FIFO" CpuAffinity="1" WaitPolicy="POLL" Priority="99" />
+      <Plugins LoadAll="false">
+        <Enable Name="console"/>
+        <Enable Name="console_logger"/>
+        <Enable Name="gain" />
+    </Plugins>
+    <Plugins LoadAll="true" Path="/home/codac-dev/hzm/apptest/vector/target/main/c++/lib"/>
+  </Process>
+
+  </Host>
+</Environment>

@@ -15,36 +15,13 @@
  * refer to the file ITER-LICENSE.TXT located in the top level directory
  * of the distribution package.
  */
-#include <mdslib.h>
-#include <mdsshr.h>
-
-#define statusOK(status) ((status) & 1)
-
-static int getSize(char* sigName)
-{
-    int dtype_long=DTYPE_LONG;
-    int retSize;
-    int lenDescr;
-    int null=0;
-    int status;
-    char expression[1024];
-
-    sprintf(expression,"SIZE(%s)",sigName);
-    lenDescr=descr(&dtype_long,&retSize,&null);
-    status=MdsValue(expression,&lenDescr,&null,0);
-
-    if(!statusOK(status)){
-        fprintf(stderr,"Error getting size of %s.\n",sigName);
-        fprintf(stderr,"%s.\n",MdsGetMsg(status));
-        return -1;
-    }
-    return retSize;
-}
 
 #ifndef RTF_BLOCK_READ_SIG_H_
 #define RTF_BLOCK_READ_SIG_H_
 
 #include <string>
+#include <mdsobjects.h>
+#include <cstdlib>
 
 #include "rtf/block.h"
 
@@ -54,6 +31,10 @@ namespace block {
 /**
  * @brief ReadSig function block.
  */
+inline char* s2c(const std::string & s){
+    return const_cast<char*>(s.c_str());
+}
+
 template <typename T>
 class ReadSig : public FunctionBlock {
  public:
@@ -75,23 +56,8 @@ class ReadSig : public FunctionBlock {
   Parameter<std::string> tree_;
   Parameter<int32_t> shot_;
 
-  int shot;
-  char server[128];
-  char tree[128];
-  char signaly[128];
-  char signalx[128];
-
-  int socket;
-  int status;
-  int size;
-  T* data;
-  T* timebase;
-  int sigDesc;
-  int timeDesc;
-  int dtype_float=DTYPE_FLOAT;
-  int null=0;
-  int retLen;
-
+ //MDSplus::Connection *conn;
+  int size=-1;
 };
 
 template <typename T>
@@ -107,42 +73,16 @@ ReadSig<T>::ReadSig(const BlockConfigurator& configurator) : FunctionBlock(confi
   initParameter("SigName",sig_name_,configurator,dsigname);
 
   initParameter("Shot",shot_,configurator,81561);
-
-//convert constant variable
-  strcpy(server,(*server_).c_str());
-  strcpy(tree,(*tree_).c_str());
-  strcpy(signaly,(*sig_name_).c_str());
-  //strcpy(signalx,(*sig_name_).c_str());
-  sprintf(signalx,"DIM_OF(%s)",signaly);
-  shot=*shot_;
-;
-
-//connect to server and open tree
-  socket=MdsConnect(server);
-    if(socket==-1)
-        std::cerr<<"Error Connecting: "<<server<<std::endl;
-    else
-        std::cout<<"Connected to :"<<server<<std::endl;
-  status=MdsOpen(tree,&shot);
-  if(!statusOK(status))
-    std::cerr<<"Error Opening "<<shot<<"shot "<<"in tree:"<<tree<<std::endl;
-  else
-    std::cout<<"Opened :"<<shot<<" in "<<tree<<std::endl;
-
-//retrieve buffer size
-  size=getSize(signaly);
-
-//initialize buffer
-  data = (T *)malloc(size*sizeof(T));
-  if(!data)
-      std::cerr<<"Error allocating memory for data.";
-
-  timebase = (T *)malloc(size*sizeof(T));
-  if(!timebase){
-      std::cerr<<"Error allocating memory for timebase.";
-      free((void*)data);
+/*
+  try{
+      MDSplus::Connection *con= new MDSplus::Connection(s2c(*server_));
+      conn=con;
+      conn->openTree(s2c(*tree_),*shot_);
   }
-
+  catch(MDSplus::MdsException *exc){
+      std::cerr<<"Error "<<exc->what()<<std::endl;
+  }
+*/
 }
 
 template<typename T>
@@ -152,28 +92,25 @@ bool ReadSig<T>::process() {
   std::cout<<"Tree: "<<*tree_<<std::endl;
   std::cout<<"Shot: "<<*shot_<<std::endl;
   std::cout<<"Signal: "<<*sig_name_<<std::endl;
-  std::cout<<"Total sample points: "<<size<<std::endl;
 
-  sigDesc=descr(&dtype_float,data,&size,&null);
-  timeDesc=descr(&dtype_float,timebase,&size,&null);
+  MDSplus::Connection *conn= new MDSplus::Connection("202.127.204.12");
+      conn->openTree("pcs_east",81561);
+ MDSplus::Data* data=conn->get("\\pcrl01");
+  MDSplus::Data* timebase=conn->get("DIM_OF(pcrl01)");
 
-  status=MdsValue(signaly,&sigDesc,&null,&retLen);
-    if(!statusOK(status)){
-        std::cerr<<"Error retrieving data:"<<MdsGetMsg(status)<<std::endl;
-        free((void*)data);
-        return -1;
-    }
-    status=MdsValue(signalx,&timeDesc,&null,&retLen);
-    if(!statusOK(status)){
-        std::cerr<<"Error retrieving timebase:"<<MdsGetMsg(status)<<std::endl;
-        free((void*)data);
-        free((void*)timebase);
-        return -1;
-    }
+  T* databuf=data->getFloatArray(&size);
+  float* timebuf=timebase->getFloatArray(&size);
 
-    for(retLen=0;retLen!=1000;++retLen)
-        std::cout<<data[retLen]<<":"<<timebase[retLen]<<std::endl;
-    return true;
+  deleteData(data);
+  deleteData(timebase);
+  conn->closeTree(s2c(*tree_),*shot_);
+
+  std::cout<<size<<std::endl;
+
+  delete databuf;
+  delete timebuf;
+
+  return true;
 }
 
 /**
