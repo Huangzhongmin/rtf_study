@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Service Type="ConsoleLogger" Id="LoggingService"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://rtf.iter.org/1.0" xsi:schemaLocation="http://rtf.iter.org/1.0 rtf.xsd">
+  <ServiceParameter Name="DefaultVerbosity" Value="FINE"/>
+  <ServiceParameter Name="LoggerQueueSize" Value="4096"/>
+</Service>

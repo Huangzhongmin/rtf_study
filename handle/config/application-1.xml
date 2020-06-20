@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://rtf.iter.org/1.0" xsi:schemaLocation="http://rtf.iter.org/1.0 rtf.xsd" Name="app01">
+    <Description>RTF application test - write to file</Description>
+
+    <FunctionBlock Name="reader" Type="ConsoleReader<float64>">
+            <OutputPort Name="Out" Signal="reader::a" />
+    </FunctionBlock>
+
+    <FunctionBlock Name="Timer1Hz" Type="Timer">
+      <Parameter Name="Period" Value="1"/>
+      <Parameter Name="Offset" Value="1.0"/>
+
+      <FunctionBlock Name="FileOutput" Type="FileWriter<float64>">
+        <Parameter Name="FilePath" Value="/tmp/current_data.log"/>
+        <InputPort Name="In" Signal="reader::a"/>
+    </FunctionBlock>
+
+    </FunctionBlock>
+
+</Application>

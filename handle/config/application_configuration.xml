@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rtf.iter.org/1.0" xsi:namespaceSchemaLocation="http://rtf.iter.org/1.0 rtf.xsd">
+	<Deployment>
+		<DeploymentSpecification RefId="app01" ThreadId="n1.p1.t1"/>
+
+		<!--======================================================================
+		    Put any function block to it's own thread by changing the
+		    thread id of a given function block.
+			Do not forget to update the evnironment for the processes and threads.
+		=======================================================================-->
+
+		<!-- <DeploymentSpecification RefId="app01" ThreadId="n1.p1.t1"/> -->
+		<!-- <DeploymentSpecification RefId="app01.readers" ThreadId="n1.p1.t1"/> -->
+		<!-- <DeploymentSpecification RefId="app01.readers.reader1" ThreadId="n1.p1.t1"/> -->
+		<!-- <DeploymentSpecification RefId="app01.readers.reader2" ThreadId="n1.p1.t1"/> -->
+		<!-- <DeploymentSpecification RefId="app01.add" ThreadId="n1.p1.t1"/> -->
+		<!-- <DeploymentSpecification RefId="app01.writer1" ThreadId="n1.p2.t2"/> -->
+		<!-- <DeploymentSpecification RefId="app01.writer2" ThreadId="n1.p1.t1"/> -->
+		<!-- <DeploymentSpecification RefId="app01.writer3" ThreadId="n1.p1.t1"/> -->
+		<!-- <DeploymentSpecification RefId="epics-transport-layer" ThreadId="n1.p2.t1"/> -->
+	</Deployment>
+
+
+	<Gateways>
+		<InterThread From="*" To="*" Signal="*">
+			<Parameter Name="QueueSize" Value="100"/>
+			<Parameter Name="SelectionMode" Value="TakeLatest"/>
+			<Parameter Name="Blocking" Value="true"/>
+		</InterThread>
+
+		<InterProcess From="*" To="*" Signal="*">
+			<Parameter Name="QueueSize" Value="100"/>
+			<Parameter Name="SelectionMode" Value="TakeLatest"/>
+			<Parameter Name="Blocking" Value="false"/>
+			<Parameter Name="TransportLayer" Value="epics-transport-layer" />
+		</InterProcess>
+
+
+	</Gateways>
+
+	<xi:include href="application-1.xml" />
+	<xi:include href="environment.xml" />
+</Configuration>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rtf.iter.org/1.0" xsi:namespaceSchemaLocation="http://rtf.iter.org/1.0 rtf.xsd">
+
+	<Deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rtf.iter.org/1.0" xsi:schemaLocation="http://rtf.iter.org/1.0 rtf.xsd">
+		<PriorityRanking>
+			<FunctionBlock Id="app01.reader"/>
+			<FunctionBlock Id="app01.Timer1Hz"/>
+		</PriorityRanking>
+
+		<DeploymentSpecification RefId="LoggingService" ThreadId="n1.p1.t2"/>
+
+	</Deployment>
+
+	<xi:include href="environment.xml" />
+	
+	<Service Type="EpicsTransportLayer" Id="epics-transport-layer">
+		<ServiceParameter Name="QueueSize" Value="100"/>
+		<ServiceParameter Name="Interface" Value="pva"/>
+	</Service>
+
+	<xi:include href="service-logging.xml" />
+
+</Configuration>
