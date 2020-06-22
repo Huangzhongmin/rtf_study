@@ -1,0 +1,4 @@
+#Mon Jun 22 03:34:47 CEST 2020
+plugin=east_rfm
+hasCompileStage=false
+block=RfmSingleWrite
