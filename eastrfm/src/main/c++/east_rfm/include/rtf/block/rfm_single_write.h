@@ -22,6 +22,18 @@
 #include <string>
 
 #include "rtf/block.h"
+#include "rfm2g_api.h"
+
+#define TEST_RFM
+#ifndef TEST_RFM
+#include "east_rfm_index.h"
+#else
+#include <unordered_map>
+unordered_map<std::string,int> east_rfm_index={
+{test0,0},
+{test1,1}
+}
+#endif
 
 namespace rtf {
 namespace block {
@@ -45,17 +57,19 @@ class RfmSingleWrite : public FunctionBlock {
   bool process() override;
 
  private:
-  Parameter<float64_t> gain_; //!< Parameter example
-  InputPort<T> in_;           //!< Input port example
-  OutputPort<T> out_;         //!< Output port example 
+  Parameter<std::string> channel_; // name mapping to offset
+  InputPort<T> in_;           // number to write to rfm
+
+  RFM2G_HANDLE hndl;
 };
 
 template <typename T>
 RfmSingleWrite<T>::RfmSingleWrite(const BlockConfigurator& configurator) : FunctionBlock(configurator) {
   // Function block initialization example
-  initParameter("Gain", gain_, configurator, 2.0);
+  initParameter("Channel", channel_, configurator, std::string("test0"));
   initInputPort("In", in_, configurator);
-  initOutputPort("Out", out_, configurator);
+  
+  open
 }
 
 template<typename T>
